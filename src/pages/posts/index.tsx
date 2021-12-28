@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { NextPage } from "next";
 import { PostData } from "../../types/Post";
 import { fetcher } from "../../utils/fetcher";
-import { marked } from "marked";
+import { MDViewer } from "../../components/MDViewer";
 
 const PostPage: NextPage = () => {
   const {data, error } = useSWR("http://localhost:1337/api/posts/", fetcher);
@@ -16,15 +16,12 @@ const PostPage: NextPage = () => {
         const { attributes, id } = postdata;
         const { title, contents, author } = attributes;
         return (
-          <div key={`posts-${id}`}>
-            <article>
-              <h1>{title}</h1>
-              <p>작성자 : {author}</p>
-              <div dangerouslySetInnerHTML={
-                { __html: marked(contents)}
-              }></div>
-            </article>
-          </div>
+            <MDViewer
+              key={`posts-${id}`} 
+              title={title}
+              contents={contents}
+              author={author}
+            />
         )
       })}
     </div>
