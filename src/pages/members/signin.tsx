@@ -19,6 +19,11 @@ const SignInPage: NextPage = () => {
 
     const response = await signIn(email, pwd);
     console.log(response)
+
+    document.cookie = `jwt=Bearer ${response.data.jwt}; Path=/`
+
+
+    // 아래처럼하기 싫으면 async, await 하자!
     // signIn(email, pwd).then((res) => {
     //   console.log(res)
     // })
