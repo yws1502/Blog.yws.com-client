@@ -2,9 +2,14 @@ import axios from "axios";
 import {NextPage} from "next"
 import { useState } from "react";
 import { signIn } from "../../utils/auth";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
+
 const SignInPage: NextPage = () => {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
+  const [cookies, setCookie] = useCookies(["jwt"]);
+  const router = useRouter();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -16,17 +21,20 @@ const SignInPage: NextPage = () => {
 
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const response = await signIn(email, pwd);
-    console.log(response)
 
-    document.cookie = `jwt=Bearer ${response.data.jwt}; Path=/`
+    setCookie("jwt", `${response.data.jwt}`, { path: '/'}); // document.cookie = `jwt=Bearer ${response.data.jwt}; Path=/`;
+    
+    router.push('/posts/')
 
+  // 유저 정보 확인
+  //   const userData = axios.get("http://localhost:1337/api/users/me", {
+  //     headers: {
+  //       Authorization: `Bearer ${response.data.jwt}`
+  //     }
+  //   })
 
-    // 아래처럼하기 싫으면 async, await 하자!
-    // signIn(email, pwd).then((res) => {
-    //   console.log(res)
-    // })
+  //   console.log(userData);
   }
 
   return (
